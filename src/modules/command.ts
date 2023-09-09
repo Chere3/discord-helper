@@ -4,12 +4,14 @@ import { PyEGPT } from './client';
 interface CommandOptions {
     name: string;
     description?: string;
+    slash?: any;
     aliases?: string[];
     category?: string;
     usage?: string;
     cooldown?: number;
     ownerOnly?: boolean;
     guildOnly?: boolean;
+    devOnly?: boolean;
 }
 
 /**

@@ -74,8 +74,6 @@ export class PyEGPT extends Client<boolean> {
         const commands = await this.handleCommands(),
             events = await this.handleEvents();
 
-        console.log(`Loaded ${commands.length} commands and ${events.length} events`);
-
         return [commands, events];
     }
 
@@ -91,7 +89,7 @@ export class PyEGPT extends Client<boolean> {
         for (const file of files) {
             const stat = await lstat(join(path.dirname(url.fileURLToPath(import.meta.url)), dir, file));
 
-            if (stat.isDirectory()) return await this.handleCommands(join(dir, file));
+            if (stat.isDirectory()) await this.handleCommands(join(dir, file));
             if (!(file.endsWith('.ts') || file.endsWith('.js'))) continue;
 
             const { default: Class } = (await import(
@@ -102,6 +100,8 @@ export class PyEGPT extends Client<boolean> {
                 const CommandClass = new Class(this);
                 this.commands.set(CommandClass.options?.name ?? 'ping', CommandClass);
                 commands.push(CommandClass.options?.name ?? 'ping');
+
+                console.log(`Command: ${CommandClass.options?.name ?? 'ping'} loaded`);
             } catch (err) {
                 console.error(err);
             }
@@ -120,7 +120,7 @@ export class PyEGPT extends Client<boolean> {
         for (const file of files) {
             const stat = await lstat(join(path.dirname(url.fileURLToPath(import.meta.url)), dir, file));
 
-            if (stat.isDirectory()) return await this.handleEvents(join(dir, file));
+            if (stat.isDirectory()) await this.handleEvents(join(dir, file));
             if (!(file.endsWith('.ts') || file.endsWith('.js'))) continue;
 
             const eventName = file.slice(0, Math.max(0, file.indexOf('.')));
@@ -132,6 +132,7 @@ export class PyEGPT extends Client<boolean> {
                 };
 
                 this.on(eventName, event.default.bind(this, this));
+                console.log(`Event: ${eventName} loaded`);
             } catch (err) {
                 console.error(err);
             }

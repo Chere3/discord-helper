@@ -5,6 +5,7 @@
 const defaultConfig = {
     bot: {
         prefix: '!',
+        developers: [],
     },
 };
 
