@@ -1,0 +1,34 @@
+{
+    "name": "bot-pye",
+    "version": "1.0.0",
+    "description": "A bot for the Pye Discord server with integrated gpt resolution for forum posts.",
+    "main": "src/index.ts",
+    "engines": {
+        "bun": ">=1.0.0"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^17.7.1",
+        "@commitlint/config-conventional": "^17.7.0",
+        "@typescript-eslint/eslint-plugin": "^6.6.0",
+        "@typescript-eslint/parser": "^6.6.0",
+        "bun-types": "latest",
+        "eslint": "^8.49.0",
+        "eslint-plugin-unicorn": "^48.0.1",
+        "husky": "^8.0.3",
+        "prettier": "^3.0.3",
+        "typescript": "^5.2.2"
+    },
+    "scripts": {
+        "build": "bun build ./src/index.ts --outdir ./dist",
+        "dev": "bun run --watch ./src/index.ts",
+        "lint": "eslint . --ext .ts",
+        "husky:prepare": "husky install",
+        "run": "bun run dist/index.js"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "discord.js": "^14.13.0"
+    }
+}
