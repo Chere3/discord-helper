@@ -1,12 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
-import { Client, Collection, Options, Partials } from 'discord.js';
+import { Client, ClientOptions, Collection, GatewayIntentBits, Options, Partials } from 'discord.js';
 import { lstat, readdir } from 'fs/promises';
 import path, { join } from 'path';
 import url from 'url';
+import config from '../config';
 import { Command } from './command';
 
 /**
@@ -18,26 +14,42 @@ import { Command } from './command';
 
 export class PyEGPT extends Client<boolean> {
     #token: string | null;
+    config: typeof config;
 
-    constructor() {
+    constructor(configuration?: Partial<ClientOptions & (typeof config)['bot']>) {
         super({
-            intents: ['GuildMembers', 'MessageContent'],
+            intents: [
+                GatewayIntentBits.Guilds,
+                GatewayIntentBits.GuildMessages,
+                GatewayIntentBits.MessageContent,
+                GatewayIntentBits.GuildMembers,
+            ],
             partials: [Partials.Message, Partials.GuildMember],
             makeCache: Options.cacheWithLimits({
                 MessageManager: 20,
                 GuildMemberManager: 0,
                 ReactionManager: 0,
             }),
+            // shards: 'auto', Only if the bot is in more of 1 server.
+            ...configuration,
         });
         this.#token = process.env.PYEGPT_TOKEN || null;
+        this.config = { ...config, bot: { ...config.bot, prefix: configuration?.prefix ?? config.bot.prefix } };
     }
 
     /**
-     * The client commands.
-     * @type {Collection<string, any>}
+     * The client message prefix.
+     * @type {string}
      */
 
-    commands = new Collection<string, any>();
+    prefix = config.bot.prefix;
+
+    /**
+     * The client commands.
+     * @type {Collection<string, Command>}
+     */
+
+    commands = new Collection<string, Command>();
 
     /**
      * Login to the client
@@ -47,8 +59,8 @@ export class PyEGPT extends Client<boolean> {
         if (!this.#token) throw new Error('Token is not defined');
 
         console.log('Logging in..');
-        await this.login(this.#token);
         await this.handler();
+        await this.login(this.#token);
 
         return this;
     }
@@ -115,8 +127,11 @@ export class PyEGPT extends Client<boolean> {
 
             try {
                 events.push(eventName);
-                const event = await import(join(path.dirname(url.fileURLToPath(import.meta.url)), dir, file));
-                this.on(eventName, event.default.bind(null, this));
+                const event = (await import(join(path.dirname(url.fileURLToPath(import.meta.url)), dir, file))) as {
+                    default: (client: PyEGPT, ...args: any[]) => Promise<any>;
+                };
+
+                this.on(eventName, event.default.bind(this, this));
             } catch (err) {
                 console.error(err);
             }

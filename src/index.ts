@@ -1,3 +1,5 @@
 import { PyEGPT } from './modules/client';
 
-await new PyEGPT().init().catch(console.error);
+// Creates a new client instance and starts internal processes.
+const client = new PyEGPT({ prefix: '!' });
+await client.init().catch(console.error);
