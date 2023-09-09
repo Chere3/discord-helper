@@ -1,5 +1,5 @@
 import { inspect } from 'bun';
-import { Colors } from 'discord.js';
+import { ApplicationCommandOptionType, Colors } from 'discord.js';
 import { PyEGPT } from '../../modules/client';
 import { Command, CommandContext } from '../../modules/command';
 
@@ -8,6 +8,18 @@ export default class EvalCommand extends Command {
         super(client, {
             name: 'eval',
             description: 'Evalúa un código',
+            slash: {
+                name: 'eval',
+                description: 'Evalúa un código',
+                options: [
+                    {
+                        name: 'code',
+                        description: 'El código a evaluar',
+                        type: ApplicationCommandOptionType.String,
+                        required: true,
+                    },
+                ],
+            },
             usage: 'eval <args>',
             devOnly: true,
         });
@@ -17,8 +29,9 @@ export default class EvalCommand extends Command {
         const code = context.args.join(' ');
         try {
             const result = eval(code) as unknown;
+            console.log(result);
             await context.data.reply({
-                embeds: [{ description: `\`\`\`${inspect(result, { depth: 0 })}\`\`\``, color: Colors.Green }],
+                embeds: [{ description: `\`\`\`${inspect(result, { depth: 0 })}\`\`\``, color: Colors.Blue }],
                 allowedMentions: { repliedUser: false },
             });
         } catch (error) {

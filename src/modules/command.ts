@@ -1,10 +1,18 @@
-import { CommandInteraction, InteractionReplyOptions, Message, MessagePayload, MessageReplyOptions } from 'discord.js';
+import {
+    CommandInteraction,
+    InteractionReplyOptions,
+    Message,
+    MessageEditOptions,
+    MessagePayload,
+    MessageReplyOptions,
+    RESTPostAPIChatInputApplicationCommandsJSONBody,
+} from 'discord.js';
 import { PyEGPT } from './client';
 
 interface CommandOptions {
     name: string;
     description?: string;
-    slash?: any;
+    slash?: RESTPostAPIChatInputApplicationCommandsJSONBody;
     aliases?: string[];
     category?: string;
     usage?: string;
@@ -38,6 +46,23 @@ export class Command {
     constructor(client: PyEGPT, options?: CommandOptions) {
         this.client = client;
         this.options = options;
+
+        // Defaults
+        this.options = {
+            name: this.options?.name ?? 'unknown',
+            description: this.options?.description ?? 'unknown',
+            slash: this.options?.slash ?? {
+                name: this.options?.name ?? 'unknown',
+                description: this.options?.description ?? 'unknown',
+            },
+            aliases: this.options?.aliases ?? [],
+            category: this.options?.category ?? 'unknown',
+            usage: this.options?.usage ?? 'unknown',
+            cooldown: this.options?.cooldown ?? 0,
+            ownerOnly: this.options?.ownerOnly ?? false,
+            guildOnly: this.options?.guildOnly ?? true,
+            devOnly: this.options?.devOnly ?? false,
+        };
     }
 
     /**
@@ -121,5 +146,16 @@ export class CommandContext {
         if (this.data instanceof Message)
             return this.data.reply(content as string | MessagePayload | MessageReplyOptions).catch(console.error);
         else return this.data.reply(content as InteractionReplyOptions | MessagePayload).catch(console.error);
+    }
+
+    /**
+     * The command edit.
+     * @param content - The edit content.
+     * @returns {Promise<Message>}
+     */
+
+    async edit(content: string | MessagePayload | (MessageEditOptions & { fetchReply?: true })) {
+        if (this.data instanceof Message) return this.data.edit(content).catch(console.error);
+        else return this.data.editReply(content as InteractionReplyOptions | MessagePayload).catch(console.error);
     }
 }
