@@ -10,7 +10,7 @@ export default class PingCommand extends Command {
         });
     }
 
-    execute(context: CommandContext) {
-        console.log('Hello, World!');
+    async execute(context: CommandContext) {
+        await context.reply({ content: 'Pong!' });
     }
 }

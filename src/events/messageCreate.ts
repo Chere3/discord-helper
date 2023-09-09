@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import { PyEGPT } from '../modules/client';
+import { CommandContext } from '../modules/command';
 
 const message = (client: PyEGPT, message: Message) => {
     if (message.author.bot) return;
@@ -8,10 +9,9 @@ const message = (client: PyEGPT, message: Message) => {
     if (!command) return;
 
     const args = message.content.split(' ').slice(1);
-    const context = { client, command, args, data: message };
+    const context = new CommandContext(client, command, args, message);
 
     command.execute(context);
-
     return;
 };
 

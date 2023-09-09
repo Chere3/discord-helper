@@ -1,4 +1,4 @@
-import { CommandInteraction, Message } from 'discord.js';
+import { CommandInteraction, InteractionReplyOptions, Message, MessagePayload, MessageReplyOptions } from 'discord.js';
 import { PyEGPT } from './client';
 
 interface CommandOptions {
@@ -105,5 +105,19 @@ export class CommandContext {
         this.command = command;
         this.args = args;
         this.data = data;
+    }
+
+    /**
+     * The command reply.
+     * @param content - The reply content.
+     * @returns {Promise<Message>}
+     */
+
+    async reply(
+        content: string | (MessagePayload | MessageReplyOptions) | (InteractionReplyOptions & { fetchReply?: true })
+    ) {
+        if (this.data instanceof Message)
+            return this.data.reply(content as string | MessagePayload | MessageReplyOptions).catch(console.error);
+        else return this.data.reply(content as InteractionReplyOptions | MessagePayload).catch(console.error);
     }
 }
