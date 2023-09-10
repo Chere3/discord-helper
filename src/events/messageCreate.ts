@@ -11,7 +11,7 @@ const message = async (client: PyEGPT, message: Message) => {
     const args = message.content.split(' ').slice(1);
     const context = new CommandContext(client, command, args, message);
 
-    if (command.checkCommand(message) === false) return;
+    if ((await command.checkCommand(message)) !== true) return;
 
     try {
         command.execute(context);

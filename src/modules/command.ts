@@ -1,6 +1,8 @@
 import {
+    Colors,
     CommandInteraction,
     InteractionReplyOptions,
+    InteractionResponse,
     Message,
     MessageEditOptions,
     MessagePayload,
@@ -17,9 +19,13 @@ interface CommandOptions {
     category?: string;
     usage?: string;
     cooldown?: number;
+    /*
     ownerOnly?: boolean;
+    */
+
     guildOnly?: boolean;
     devOnly?: boolean;
+    examples: string[];
 }
 
 /**
@@ -59,9 +65,13 @@ export class Command {
             category: this.options?.category ?? 'unknown',
             usage: this.options?.usage ?? 'unknown',
             cooldown: this.options?.cooldown ?? 0,
-            ownerOnly: this.options?.ownerOnly ?? false,
             guildOnly: this.options?.guildOnly ?? true,
+            /*
+             * If you want to use the ownerOnly option, uncomment this.
+             ownerOnly: this.options?.ownerOnly ?? false
+             */
             devOnly: this.options?.devOnly ?? false,
+            examples: this.options?.examples ?? [],
         };
     }
 
@@ -71,9 +81,42 @@ export class Command {
      * @readonly
      */
 
-    checkCommand(convertibleObject: CommandInteraction | Message): boolean {
+    async checkCommand(
+        convertibleObject: CommandInteraction | Message
+    ): Promise<Message<boolean> | InteractionResponse<boolean> | boolean> {
         const args = this.options?.usage?.match(/<.+?>/g) ?? [];
-        console.log(args);
+        const content =
+            convertibleObject instanceof Message
+                ? convertibleObject.content
+                : convertibleObject.options.data.map((x) => x.value).join(' ');
+
+        if (
+            this.options?.devOnly &&
+            !this.client.config.bot.developers.includes(convertibleObject.member?.user.id ?? '')
+        )
+            return false;
+
+        if (this.options?.guildOnly && convertibleObject.guild === null) return false;
+        /*
+         * If you want to use the ownerOnly option, uncomment this.
+         if (this.options?.ownerOnly && convertibleObject.author.id !== this.client.config.bot.owner) return false
+         */
+
+        if (args.length > 0 && content.split(' ').length - 1 < args.length)
+            return await convertibleObject.reply({
+                embeds: [
+                    {
+                        color: Colors.Blue,
+                        author: {
+                            name: '¡El comando no se ha ejecutado correctamente!',
+                        },
+                        description: `**No has proporcionado los argumentos necesarios para ejecutar ese comando.**\n**Uso:**\`\`\`${
+                            this.options?.usage ?? ''
+                        }\`\`\`\n**Ejemplos de uso:**\`\`\`${this.options?.examples.join('\n') ?? ''}\`\`\``,
+                    },
+                ],
+                ephemeral: true,
+            });
 
         return true;
     }

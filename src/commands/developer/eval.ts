@@ -8,6 +8,7 @@ export default class EvalCommand extends Command {
         super(client, {
             name: 'eval',
             description: 'Evalúa un código',
+            examples: ['eval <código>'],
             slash: {
                 name: 'eval',
                 description: 'Evalúa un código',

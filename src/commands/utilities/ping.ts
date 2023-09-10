@@ -7,7 +7,8 @@ export default class PingCommand extends Command {
         super(client, {
             name: 'ping',
             description: 'Pong!',
-            usage: 'ping <args>',
+            usage: 'ping',
+            examples: ['ping'],
         });
     }
 
