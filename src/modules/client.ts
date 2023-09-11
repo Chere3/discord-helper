@@ -8,12 +8,12 @@ import { Command } from './command';
 
 /**
  * The main client class.
- * @class PyEGPT
+ * @class AskBot
  * @abstract
  * @extends {Client}
  */
 
-export class PyEGPT extends Client<boolean> {
+export class AskBot extends Client<boolean> {
     /**
      * The client token.
      * @type {string | null}
@@ -37,6 +37,7 @@ export class PyEGPT extends Client<boolean> {
                 GatewayIntentBits.GuildMembers,
             ],
             partials: [Partials.Message, Partials.GuildMember],
+            allowedMentions: { parse: ['users'], repliedUser: true },
             makeCache: Options.cacheWithLimits({
                 MessageManager: 20,
                 GuildMemberManager: 0,
@@ -53,7 +54,7 @@ export class PyEGPT extends Client<boolean> {
             // shards: 'auto', Only if the bot is in more of 1 server.
             ...configuration,
         });
-        this.#token = process.env.PYEGPT_TOKEN || null;
+        this.#token = process.env.AskBot_TOKEN || null;
         this.config = { ...config, bot: { ...config.bot, prefix: configuration?.prefix ?? config.bot.prefix } };
     }
 
@@ -80,7 +81,7 @@ export class PyEGPT extends Client<boolean> {
 
     /**
      * Login to the client
-     * @returns {PyEGPT}
+     * @returns {AskBot}
      */
     async init() {
         if (!this.#token) throw new Error('Token is not defined');
@@ -155,7 +156,7 @@ export class PyEGPT extends Client<boolean> {
             try {
                 events.push(eventName);
                 const event = (await import(join(path.dirname(url.fileURLToPath(import.meta.url)), dir, file))) as {
-                    default: (client: PyEGPT, ...args: any[]) => Promise<any>;
+                    default: (client: AskBot, ...args: any[]) => Promise<any>;
                 };
 
                 this.on(eventName, event.default.bind(this, this));

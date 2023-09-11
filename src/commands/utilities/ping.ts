@@ -1,9 +1,9 @@
 import { Colors } from 'discord.js';
-import { PyEGPT } from '../../modules/client';
+import { AskBot } from '../../modules/client';
 import { Command, CommandContext } from '../../modules/command';
 
 export default class PingCommand extends Command {
-    constructor(client: PyEGPT) {
+    constructor(client: AskBot) {
         super(client, {
             name: 'ping',
             description: 'Pong!',

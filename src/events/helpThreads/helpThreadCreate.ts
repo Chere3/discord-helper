@@ -1,7 +1,7 @@
 import { Colors, TextChannel, ThreadChannel } from 'discord.js';
-import { PyEGPT } from '../../modules/client';
+import { AskBot } from '../../modules/client';
 
-const run = async (client: PyEGPT, channel: ThreadChannel, parentChannel: TextChannel) => {
+const run = async (client: AskBot, channel: ThreadChannel, parentChannel: TextChannel) => {
     await channel.sendTyping();
 
     try {

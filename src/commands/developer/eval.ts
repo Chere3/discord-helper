@@ -1,10 +1,10 @@
 import { inspect } from 'bun';
 import { ApplicationCommandOptionType, Colors } from 'discord.js';
-import { PyEGPT } from '../../modules/client';
+import { AskBot } from '../../modules/client';
 import { Command, CommandContext } from '../../modules/command';
 
 export default class EvalCommand extends Command {
-    constructor(client: PyEGPT) {
+    constructor(client: AskBot) {
         super(client, {
             name: 'eval',
             description: 'Evalúa un código',

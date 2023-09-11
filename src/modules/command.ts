@@ -9,7 +9,7 @@ import {
     MessageReplyOptions,
     RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from 'discord.js';
-import { PyEGPT } from './client';
+import { AskBot } from './client';
 
 interface CommandOptions {
     name: string;
@@ -37,10 +37,10 @@ interface CommandOptions {
 export class Command {
     /**
      * The client.
-     * @type {PyEGPT}
+     * @type {AskBot}
      */
 
-    client: PyEGPT;
+    client: AskBot;
 
     /**
      * The command options.
@@ -49,7 +49,7 @@ export class Command {
 
     options: CommandOptions | undefined;
 
-    constructor(client: PyEGPT, options?: CommandOptions) {
+    constructor(client: AskBot, options?: CommandOptions) {
         this.client = client;
         this.options = options;
 
@@ -133,11 +133,11 @@ export class Command {
 export class CommandContext {
     /**
      * The client context.
-     * @type {PyEGPT}
+     * @type {AskBot}
      * @readonly
      */
 
-    readonly client: PyEGPT;
+    readonly client: AskBot;
 
     /**
      * The command context.
@@ -170,7 +170,7 @@ export class CommandContext {
      * @param args - The command arguments.
      * @param data - The command data, can be a message or a command interaction.
      */
-    constructor(client: PyEGPT, command: Command, args: string[], data: Message | CommandInteraction) {
+    constructor(client: AskBot, command: Command, args: string[], data: Message | CommandInteraction) {
         this.client = client;
         this.command = command;
         this.args = args;

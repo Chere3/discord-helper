@@ -10,7 +10,7 @@ const defaultConfig = {
         * If you want to use the ownerOnly option, uncomment this.
         owners: [] as string[],
         */
-        forumCategories: ['test'] as string[],
+        forumCategories: ['testing'] as string[],
     },
     ai: {
         systemMessage: `TASK: 

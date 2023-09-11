@@ -1,7 +1,7 @@
 import { REST, Routes } from 'discord.js';
-import { PyEGPT } from '../modules/client';
+import { AskBot } from '../modules/client';
 
-const run = async (client: PyEGPT) => {
+const run = async (client: AskBot) => {
     console.log(`Logged in as ${client.user?.username ?? 'Unknown'}`);
 
     // set the client user's presence
