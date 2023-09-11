@@ -3,6 +3,7 @@ import { lstat, readdir } from 'fs/promises';
 import path, { join } from 'path';
 import url from 'url';
 import config from '../config';
+import { AI } from './ai';
 import { Command } from './command';
 
 /**
@@ -13,7 +14,18 @@ import { Command } from './command';
  */
 
 export class PyEGPT extends Client<boolean> {
+    /**
+     * The client token.
+     * @type {string | null}
+     * @private
+     */
     #token: string | null;
+
+    /**
+     * The client configuration.
+     * @type {typeof config}
+     * @private
+     */
     config: typeof config;
 
     constructor(configuration?: Partial<ClientOptions & (typeof config)['bot']>) {
@@ -58,6 +70,13 @@ export class PyEGPT extends Client<boolean> {
      */
 
     commands = new Collection<string, Command>();
+
+    /**
+     * The AI module.
+     * @type {AI}
+     */
+
+    ai = new AI();
 
     /**
      * Login to the client
